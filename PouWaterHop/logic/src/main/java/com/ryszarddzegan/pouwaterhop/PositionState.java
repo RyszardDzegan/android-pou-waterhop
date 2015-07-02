@@ -12,7 +12,7 @@ public enum PositionState {
         return value;
     }
 
-    private PositionState(int value) {
+    PositionState(int value) {
         this.value = value;
     }
 }
