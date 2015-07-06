@@ -6,7 +6,7 @@ public enum PositionState {
     COIN    (0b10),
     CLOCK   (0b11);
 
-    private int value;
+    private final int value;
 
     public int getValue() {
         return value;

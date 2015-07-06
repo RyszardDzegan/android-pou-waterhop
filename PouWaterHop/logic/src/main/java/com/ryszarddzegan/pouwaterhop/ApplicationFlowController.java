@@ -1,8 +1,8 @@
 package com.ryszarddzegan.pouwaterhop;
 
 public class ApplicationFlowController implements GameStateChangedListener, GameActionPerformedListener {
-    private GameActionRequiredListener gameActionRequiredListener;
-    private GameStateRequiredListener gameStateRequiredListener;
+    private final GameActionRequiredListener gameActionRequiredListener;
+    private final GameStateRequiredListener gameStateRequiredListener;
 
     public ApplicationFlowController(GameActionRequiredListener gameActionRequiredListener, GameStateRequiredListener gameStateRequiredListener) throws IllegalArgumentException {
         if (gameActionRequiredListener == null)

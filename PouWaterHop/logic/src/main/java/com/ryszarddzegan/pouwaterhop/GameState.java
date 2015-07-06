@@ -17,7 +17,7 @@ public enum GameState {
     CLOCK_COIN  (0b1110),
     CLOCK_CLOCK (0b1111);
 
-    private int value;
+    private final int value;
 
     public int getValue() {
         return value;
