@@ -1,18 +1,35 @@
 package com.ryszarddzegan.pouwaterhop;
 
-public class ApplicationFlowController implements GameStateChangedListener, GameActionPerformedListener {
+public class ApplicationFlow implements GameActionPerformedListener, GameStateRequiredListener, GameImageProvidedListener, GameStateChangedListener {
     private final GameActionRequiredListener gameActionRequiredListener;
-    private final GameStateRequiredListener gameStateRequiredListener;
+    private final GameImageRequiredListener gameImageRequiredListener;
 
-    public ApplicationFlowController(GameActionRequiredListener gameActionRequiredListener, GameStateRequiredListener gameStateRequiredListener) throws IllegalArgumentException {
+    public ApplicationFlow(GameActionRequiredListener gameActionRequiredListener, GameImageRequiredListener gameImageRequiredListener) throws IllegalArgumentException {
         if (gameActionRequiredListener == null)
             throw new IllegalArgumentException("gameActionRequiredListener cannot be null");
 
-        if (gameStateRequiredListener == null)
-            throw new IllegalArgumentException("gameStateRequiredListener cannot be null");
+        if (gameImageRequiredListener == null)
+            throw new IllegalArgumentException("gameImageRequiredListener cannot be null");
 
         this.gameActionRequiredListener = gameActionRequiredListener;
-        this.gameStateRequiredListener = gameStateRequiredListener;
+        this.gameImageRequiredListener = gameImageRequiredListener;
+    }
+
+    @Override
+    public void onGameActionPerformed() {
+        onGameStateRequired();
+    }
+
+    @Override
+    public void onGameStateRequired() {
+        gameImageRequiredListener.onGameImageRequired();
+    }
+
+    @Override
+    public void onGameImageProvided(Image image) {
+        // TODO: Process image...
+        GameState gameState = GameState.EMPTY_EMPTY;
+        onGameStateChanged(gameState);
     }
 
     @Override
@@ -38,10 +55,5 @@ public class ApplicationFlowController implements GameStateChangedListener, Game
         }
 
         gameActionRequiredListener.onGameActionRequired(GameAction.JUMP2);
-    }
-
-    @Override
-    public void onGameActionPerformed() {
-        gameStateRequiredListener.onGameStateRequired();
     }
 }
