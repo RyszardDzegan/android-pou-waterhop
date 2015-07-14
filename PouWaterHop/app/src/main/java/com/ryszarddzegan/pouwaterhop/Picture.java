@@ -5,6 +5,10 @@ import android.graphics.Bitmap;
 public class Picture implements Image {
     private final Bitmap bitmap;
 
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
     public Picture(Bitmap bitmap) {
         this.bitmap = bitmap;
     }

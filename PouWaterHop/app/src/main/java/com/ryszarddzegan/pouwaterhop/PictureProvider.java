@@ -9,11 +9,11 @@ import android.provider.MediaStore;
 public class PictureProvider implements GameImageRequiredListener {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private final Activity activity;
-    private final GameImageProvidedListener gameImageProvidedListener;
+    private final PictureProvidedListener pictureProvidedListener;
 
-    public PictureProvider(Activity activity, GameImageProvidedListener gameImageProvidedListener) {
+    public PictureProvider(Activity activity, PictureProvidedListener pictureProvidedListener) {
         this.activity = activity;
-        this.gameImageProvidedListener = gameImageProvidedListener;
+        this.pictureProvidedListener = pictureProvidedListener;
     }
 
     public void processActivityResult(int requestCode, int resultCode, Intent data) {
@@ -24,7 +24,7 @@ public class PictureProvider implements GameImageRequiredListener {
         Bitmap bitmap = (Bitmap) extras.get("data");
         Picture picture = new Picture(bitmap);
 
-        gameImageProvidedListener.onGameImageProvided(picture);
+        pictureProvidedListener.onPictureProvided(picture);
     }
 
     @Override

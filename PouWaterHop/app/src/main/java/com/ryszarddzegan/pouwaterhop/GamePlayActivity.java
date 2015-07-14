@@ -1,38 +1,31 @@
 package com.ryszarddzegan.pouwaterhop;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-public class GamePlayActivity extends ActionBarActivity implements GameActionPerformedListener, GameActionRequiredListener, GameStateChangedListener, GameStateRequiredListener, GameImageProvidedListener, GameImageRequiredListener {
-    private final PictureProvider pictureProvider;
-    private final GameActionPerformedListener gameActionPerformedListener;
-    private final GameActionRequiredListener gameActionRequiredListener;
-    private final GameStateChangedListener gameStateChangedListener;
-    private final GameStateRequiredListener gameStateRequiredListener;
-    private final GameImageProvidedListener gameImageProvidedListener;
-    private final GameImageRequiredListener gameImageRequiredListener;
+public class GamePlayActivity extends AppCompatActivity implements View.OnClickListener, GameActionPerformedListener, GameActionRequiredListener, GameStateChangedListener, GameStateRequiredListener, PictureProvidedListener, GameImageRequiredListener {
 
-
-    public GamePlayActivity() {
-        GameActionProvider gameActionProvider = new GameActionProvider(this, this);
-        ApplicationFlow applicationFlow = new ApplicationFlow(this, this);
-
-        pictureProvider = new PictureProvider(this, this);
-        gameActionPerformedListener = applicationFlow;
-        gameActionRequiredListener = gameActionProvider;
-        gameStateChangedListener = applicationFlow;
-        gameStateRequiredListener = applicationFlow;
-        gameImageProvidedListener = applicationFlow;
-        gameImageRequiredListener = pictureProvider;
-    }
+    private PictureProvider pictureProvider;
+    private GameActionPerformedListener gameActionPerformedListener;
+    private GameStateChangedListener gameStateChangedListener;
+    private GameStateRequiredListener gameStateRequiredListener;
+    private GameImageProvidedListener gameImageProvidedListener;
+    private GameImageRequiredListener gameImageRequiredListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_play);
+        initializeMembers();
+        registerEventHandlers();
     }
 
     @Override
@@ -58,6 +51,17 @@ public class GamePlayActivity extends ActionBarActivity implements GameActionPer
     }
 
     @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.ready_button:
+                onReadyButtonClick();
+                break;
+            default:
+                throw new IndexOutOfBoundsException("Failed to handle onClick event. Unknown view id.");
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         pictureProvider.processActivityResult(requestCode, resultCode, data);
     }
@@ -69,12 +73,13 @@ public class GamePlayActivity extends ActionBarActivity implements GameActionPer
 
     @Override
     public void onGameActionRequired(GameAction gameAction) {
-        gameActionRequiredListener.onGameActionRequired(gameAction);
+        updateRequiredGameAction(gameAction);
     }
 
     @Override
-    public void onGameImageProvided(Image image) {
-        gameImageProvidedListener.onGameImageProvided(image);
+    public void onPictureProvided(Picture picture) {
+        updateCurrentGameStateImage(picture);
+        gameImageProvidedListener.onGameImageProvided(picture);
     }
 
     @Override
@@ -90,5 +95,36 @@ public class GamePlayActivity extends ActionBarActivity implements GameActionPer
     @Override
     public void onGameStateRequired() {
         gameStateRequiredListener.onGameStateRequired();
+    }
+
+    private void onReadyButtonClick() {
+        pictureProvider.onGameImageRequired();
+    }
+
+    private void initializeMembers() {
+        ApplicationFlow applicationFlow = new ApplicationFlow(this, this);
+        pictureProvider = new PictureProvider(this, this);
+        gameActionPerformedListener = applicationFlow;
+        gameStateChangedListener = applicationFlow;
+        gameStateRequiredListener = applicationFlow;
+        gameImageProvidedListener = applicationFlow;
+        gameImageRequiredListener = pictureProvider;
+    }
+
+    private void registerEventHandlers() {
+        Button readyButton = (Button)findViewById(R.id.ready_button);
+        readyButton.setOnClickListener(this);
+    }
+
+    private void updateCurrentGameStateImage(Picture picture) {
+        Bitmap bitmap = picture.getBitmap();
+        ImageView currentGameStateImage = (ImageView)findViewById(R.id.current_game_state_image);
+        currentGameStateImage.setImageBitmap(bitmap);
+    }
+
+    private void updateRequiredGameAction(GameAction gameAction) {
+        String gameActionText = gameAction.toString();
+        TextView requiredGameActionText = (TextView)findViewById(R.id.required_game_action_text);
+        requiredGameActionText.setText(gameActionText);
     }
 }

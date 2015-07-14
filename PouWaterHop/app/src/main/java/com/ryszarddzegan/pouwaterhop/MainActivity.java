@@ -1,17 +1,21 @@
 package com.ryszarddzegan.pouwaterhop;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        registerEventHandlers();
     }
 
     @Override
@@ -34,5 +38,26 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.start_button:
+                onStartButtonClick();
+                break;
+            default:
+                throw new IndexOutOfBoundsException("Failed to handle onClick event. Unknown view id.");
+        }
+    }
+
+    private void registerEventHandlers() {
+        Button startButton = (Button)findViewById(R.id.start_button);
+        startButton.setOnClickListener(this);
+    }
+
+    private void onStartButtonClick() {
+        Intent intent = new Intent(this, GamePlayActivity.class);
+        startActivity(intent);
     }
 }
