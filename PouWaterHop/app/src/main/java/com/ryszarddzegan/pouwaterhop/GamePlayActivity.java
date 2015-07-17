@@ -33,6 +33,7 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
         setContentView(R.layout.activity_game_play);
         initializeMembers();
         registerEventHandlers();
+        pictureProvider.onGameImageRequired();
     }
 
     @Override
