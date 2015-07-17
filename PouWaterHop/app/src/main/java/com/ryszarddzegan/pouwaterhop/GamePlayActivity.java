@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class GamePlayActivity extends AppCompatActivity implements View.OnClickListener, GameActionPerformedListener, GameActionRequiredListener, GameStateChangedListener, GameStateRequiredListener, PictureProvidedListener, GameImageRequiredListener {
+public class GamePlayActivity extends AppCompatActivity implements GameActionPerformedListener, GameActionRequiredListener, GameStateChangedListener, GameStateRequiredListener, PictureProvidedListener, GameImageRequiredListener {
 
     private PictureProvider pictureProvider;
     private GameActionPerformedListener gameActionPerformedListener;
@@ -19,6 +19,13 @@ public class GamePlayActivity extends AppCompatActivity implements View.OnClickL
     private GameStateRequiredListener gameStateRequiredListener;
     private GameImageProvidedListener gameImageProvidedListener;
     private GameImageRequiredListener gameImageRequiredListener;
+
+    private View.OnClickListener onReadyButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            pictureProvider.onGameImageRequired();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,17 +55,6 @@ public class GamePlayActivity extends AppCompatActivity implements View.OnClickL
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.ready_button:
-                onReadyButtonClick();
-                break;
-            default:
-                throw new IndexOutOfBoundsException("Failed to handle onClick event. Unknown view id.");
-        }
     }
 
     @Override
@@ -97,10 +93,6 @@ public class GamePlayActivity extends AppCompatActivity implements View.OnClickL
         gameStateRequiredListener.onGameStateRequired();
     }
 
-    private void onReadyButtonClick() {
-        pictureProvider.onGameImageRequired();
-    }
-
     private void initializeMembers() {
         ApplicationFlow applicationFlow = new ApplicationFlow(this, this);
         pictureProvider = new PictureProvider(this, this);
@@ -113,7 +105,7 @@ public class GamePlayActivity extends AppCompatActivity implements View.OnClickL
 
     private void registerEventHandlers() {
         Button readyButton = (Button)findViewById(R.id.ready_button);
-        readyButton.setOnClickListener(this);
+        readyButton.setOnClickListener(onReadyButtonClickListener);
     }
 
     private void updateCurrentGameStateImage(Picture picture) {

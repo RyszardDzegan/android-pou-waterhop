@@ -9,7 +9,15 @@ import android.view.View;
 import android.widget.Button;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
+
+    private View.OnClickListener onStartButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getBaseContext(), GamePlayActivity.class);
+            startActivity(intent);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,24 +48,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.start_button:
-                onStartButtonClick();
-                break;
-            default:
-                throw new IndexOutOfBoundsException("Failed to handle onClick event. Unknown view id.");
-        }
-    }
-
     private void registerEventHandlers() {
         Button startButton = (Button)findViewById(R.id.start_button);
-        startButton.setOnClickListener(this);
-    }
-
-    private void onStartButtonClick() {
-        Intent intent = new Intent(this, GamePlayActivity.class);
-        startActivity(intent);
+        startButton.setOnClickListener(onStartButtonClickListener);
     }
 }
