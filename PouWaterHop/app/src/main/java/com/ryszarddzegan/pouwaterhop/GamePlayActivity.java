@@ -111,8 +111,10 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
 
     private void updateCurrentGameStateImage(Picture picture) {
         Bitmap bitmap = picture.getBitmap();
+        Bitmap bottomHalfBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight() >> 1);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bottomHalfBitmap, bottomHalfBitmap.getWidth() << 3, bottomHalfBitmap.getHeight() << 3, false);
         ImageView currentGameStateImage = (ImageView)findViewById(R.id.current_game_state_image);
-        currentGameStateImage.setImageBitmap(bitmap);
+        currentGameStateImage.setImageBitmap(scaledBitmap);
     }
 
     private void updateRequiredGameAction(GameAction gameAction) {
