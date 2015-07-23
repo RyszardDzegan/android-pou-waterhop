@@ -3,6 +3,7 @@ package com.ryszarddzegan.pouwaterhop;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
@@ -22,6 +23,7 @@ public class PictureProvider implements GameImageRequiredListener {
 
         Bundle extras = data.getExtras();
         Bitmap bitmap = (Bitmap) extras.get("data");
+        bitmap = transformBitmap(bitmap);
         Picture picture = new Picture(bitmap);
 
         pictureProvidedListener.onPictureProvided(picture);
@@ -33,5 +35,15 @@ public class PictureProvider implements GameImageRequiredListener {
         if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
             activity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
+    }
+
+    private Bitmap transformBitmap(Bitmap bitmap) {
+        bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() << 3, bitmap.getHeight() << 3, true);
+        if (bitmap.getHeight() > bitmap.getWidth()) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight() >> 1);
     }
 }
