@@ -6,5 +6,5 @@
     <string name="pou_image">Pou image</string>
     <string name="current_game_state">Current game state</string>
     <string name="ready_button">Ready</string>
-    <string name="game_instructions">Please start Pou Water Hop game on second device and put this device on top of it so that it can take game pictures. Then start the game and click Start button at the bottom.</string>
+    <string name="game_instructions">Start Pou Water Hop game on second device. Then put current device on top of it so that it would be capable of taking game pictures. Next run the Pou Water Hop game and click the below "Start" button.</string>
 </resources>
