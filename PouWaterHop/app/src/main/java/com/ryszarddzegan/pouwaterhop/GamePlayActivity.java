@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 public class GamePlayActivity extends AppCompatActivity implements GameActionPerformedListener, GameActionRequiredListener, GameStateChangedListener, GameStateRequiredListener, PictureProvidedListener, GameImageRequiredListener {
 
+    private BitmapHelper bitmapHelper;
     private PictureProvider pictureProvider;
     private GameActionPerformedListener gameActionPerformedListener;
     private GameStateChangedListener gameStateChangedListener;
@@ -74,8 +75,11 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
     }
 
     @Override
-    public void onPictureProvided(Picture picture) {
-        updateCurrentGameStateImage(picture);
+    public void onPictureProvided(Bitmap bitmap) {
+        updateCurrentGameStateImage(bitmap);
+
+        bitmap = bitmapHelper.prepareBitmapForRecognition(bitmap);
+        Picture picture = new Picture(bitmap);
         gameImageProvidedListener.onGameImageProvided(picture);
     }
 
@@ -96,6 +100,7 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
 
     private void initializeMembers() {
         ApplicationFlow applicationFlow = new ApplicationFlow(this, this);
+        bitmapHelper = new BitmapHelper();
         pictureProvider = new PictureProvider(this, this);
         gameActionPerformedListener = applicationFlow;
         gameStateChangedListener = applicationFlow;
@@ -109,8 +114,8 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
         readyButton.setOnClickListener(onReadyButtonClickListener);
     }
 
-    private void updateCurrentGameStateImage(Picture picture) {
-        Bitmap bitmap = picture.getBitmap();
+    private void updateCurrentGameStateImage(Bitmap bitmap) {
+        bitmap = bitmapHelper.prepareBitmapForDisplay(bitmap);
         ImageView currentGameStateImage = (ImageView)findViewById(R.id.current_game_state_image);
         currentGameStateImage.setImageBitmap(bitmap);
     }

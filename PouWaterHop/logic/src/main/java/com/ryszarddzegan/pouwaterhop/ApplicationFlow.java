@@ -27,8 +27,8 @@ public class ApplicationFlow implements GameActionPerformedListener, GameStateRe
 
     @Override
     public void onGameImageProvided(Image image) {
-        // TODO: Process image...
-        GameState gameState = GameState.EMPTY_EMPTY;
+        // TODO: Recognize image
+        GameState gameState = GameState.CLOCK_EMPTY;
         onGameStateChanged(gameState);
     }
 

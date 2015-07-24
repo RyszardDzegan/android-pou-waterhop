@@ -1,5 +1,7 @@
 package com.ryszarddzegan.pouwaterhop;
 
+import android.graphics.Bitmap;
+
 public interface PictureProvidedListener {
-    void onPictureProvided(Picture picture);
+    void onPictureProvided(Bitmap bitmap);
 }
