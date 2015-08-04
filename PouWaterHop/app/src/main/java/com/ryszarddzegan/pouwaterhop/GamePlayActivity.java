@@ -1,7 +1,9 @@
 package com.ryszarddzegan.pouwaterhop;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -11,9 +13,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class GamePlayActivity extends AppCompatActivity implements GameActionPerformedListener, GameActionRequiredListener, GameStateChangedListener, GameStateRequiredListener, PictureProvidedListener, GameImageRequiredListener {
 
-    private BitmapHelper bitmapHelper;
+    private ImageRecognizer imageRecognizer;
     private PictureProvider pictureProvider;
     private GameActionPerformedListener gameActionPerformedListener;
     private GameStateChangedListener gameStateChangedListener;
@@ -76,11 +81,16 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
 
     @Override
     public void onPictureProvided(Bitmap bitmap) {
-        updateCurrentGameStateImage(bitmap);
+        Image image = new ImageImp(bitmap);
 
-        bitmap = bitmapHelper.prepareBitmapForRecognition(bitmap);
-        Picture picture = new Picture(bitmap);
-        gameImageProvidedListener.onGameImageProvided(picture);
+        try {
+            updateCurrentGameStateImage(image);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        image = imageRecognizer.prepareImageForRecognition(image);
+        gameImageProvidedListener.onGameImageProvided(image);
     }
 
     @Override
@@ -100,7 +110,7 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
 
     private void initializeMembers() {
         ApplicationFlow applicationFlow = new ApplicationFlow(this, this);
-        bitmapHelper = new BitmapHelper();
+        imageRecognizer = new ImageRecognizer(PixelHelperFactoryImp.getInstance());
         pictureProvider = new PictureProvider(this, this);
         gameActionPerformedListener = applicationFlow;
         gameStateChangedListener = applicationFlow;
@@ -114,10 +124,20 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
         readyButton.setOnClickListener(onReadyButtonClickListener);
     }
 
-    private void updateCurrentGameStateImage(Bitmap bitmap) {
-        bitmap = bitmapHelper.prepareBitmapForDisplay(bitmap);
+    private void updateCurrentGameStateImage(Image image) throws IOException {
+        /* Uncomment the code below to mock camera's result */
+        AssetManager assetManager = getApplicationContext().getAssets();
+        InputStream inputStream = assetManager.open("waterhop1.jpg");
+        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+        image = new ImageImp(bitmap);
+        /**/
+
+        ImageImp imageForDisplay = (ImageImp) imageRecognizer.prepareImageForDisplay(image);
+        ImageImp imageForRecognition = (ImageImp) imageRecognizer.prepareImageForRecognitionPreview(image);
         ImageView currentGameStateImage = (ImageView)findViewById(R.id.current_game_state_image);
-        currentGameStateImage.setImageBitmap(bitmap);
+        ImageView currentGameStateImageRecognition = (ImageView)findViewById(R.id.current_game_state_image_recognition);
+        currentGameStateImage.setImageBitmap(imageForDisplay.getBitmap());
+        currentGameStateImageRecognition.setImageBitmap(imageForRecognition.getBitmap());
     }
 
     private void updateRequiredGameAction(GameAction gameAction) {
