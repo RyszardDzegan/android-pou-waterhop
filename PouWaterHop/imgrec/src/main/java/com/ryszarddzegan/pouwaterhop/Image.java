@@ -7,6 +7,7 @@ public interface Image {
     void setPixel(int pixel, int x, int y);
     int[] getPixels();
     int[] getPixels(int x, int y, int width, int height);
+    void setPixels(int[] pixels);
     void setPixels(int[] pixels, int x, int y, int width, int height);
     Image getArea(int x, int y, int width, int height);
     Image scale(int width, int height);

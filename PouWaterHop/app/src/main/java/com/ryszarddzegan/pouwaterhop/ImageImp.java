@@ -47,6 +47,11 @@ public class ImageImp implements Image {
     }
 
     @Override
+    public void setPixels(int[] pixels) {
+        setPixels(pixels, 0, 0, getWidth(), getHeight());
+    }
+
+    @Override
     public void setPixels(int[] pixels, int x, int y, int width, int height) {
         bitmap.setPixels(pixels, 0, width, x, y, width, height);
     }

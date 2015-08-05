@@ -1,14 +1,10 @@
 package com.ryszarddzegan.pouwaterhop;
 
 public class ImageArea {
-    private final PixelHelperFactory pixelHelperFactory;
     private final float xFactor;
     private final float yFactor;
     private final float widthFactor;
     private final float heightFactor;
-    private final float redFactor;
-    private final float greenFactor;
-    private final float blueFactor;
 
     public float getXFactor() {
         return xFactor;
@@ -26,56 +22,62 @@ public class ImageArea {
         return heightFactor;
     }
 
-    public float getRedFactor() {
-        return redFactor;
-    }
-
-    public float getGreenFactor() {
-        return greenFactor;
-    }
-
-    public float getBlueFactor() {
-        return blueFactor;
-    }
-
-    public ImageArea(PixelHelperFactory pixelHelperFactory, float xFactor, float yFactor, float widthFactor, float heightFactor, float redFactor, float greenFactor, float blueFactor) {
-        this.pixelHelperFactory = pixelHelperFactory;
+    public ImageArea(float xFactor, float yFactor, float widthFactor, float heightFactor) {
         this.xFactor = xFactor;
         this.yFactor = yFactor;
         this.heightFactor = heightFactor;
         this.widthFactor = widthFactor;
-        this.redFactor = redFactor;
-        this.greenFactor = greenFactor;
-        this.blueFactor = blueFactor;
+    }
+
+    public int getX(Image image) {
+        return (int) (image.getWidth()*getXFactor());
+    }
+
+    public int getY(Image image) {
+        return (int) (image.getHeight()*getYFactor());
+    }
+
+    public int getWidth(Image image) {
+        return (int) (image.getWidth()*getWidthFactor());
+    }
+
+    public int getHeight(Image image) {
+        return (int) (image.getHeight()*getHeightFactor());
     }
 
     public Image getArea(Image image) {
-        final int x = (int) (image.getWidth()*getXFactor());
-        final int y = (int) (image.getHeight()*getYFactor());
-
-        final int width = (int) (image.getWidth()*getWidthFactor());
-        final int height = (int) (image.getHeight()*getHeightFactor());
+        final int x = getX(image);
+        final int y = getY(image);
+        final int width = getWidth(image);
+        final int height = getHeight(image);
 
         return image.getArea(x, y, width, height);
     }
 
-    public void markArea(Image image) {
-        final int x = (int) (image.getWidth()*getXFactor());
-        final int y = (int) (image.getHeight()*getYFactor());
+    public void markArea(Image image, int color) {
+        final int left = getX(image);
+        final int top = getY(image);
+        final int width = getWidth(image);
+        final int height = getHeight(image);
 
-        final int width = (int) (image.getWidth()*getWidthFactor());
-        final int height = (int) (image.getHeight()*getHeightFactor());
-
-        final int pixelsCount = width * height;
-        final int[] pixels = image.getPixels(x, y, width, height);
-
-        for (int i = 0; i < pixelsCount; i++) {
-            int pixel = pixels[i];
-            PixelHelper pixelHelper = pixelHelperFactory.fromPixel(pixel);
-            int newPixel = pixelHelper.multiply(getRedFactor(), getGreenFactor(), getBlueFactor());
-            pixels[i] = newPixel;
+        // Mark left
+        for (int y = 0; y < height; y++) {
+            image.setPixel(color, left, top + y);
         }
 
-        image.setPixels(pixels, x, y, width, height);
+        // Mark right
+        for (int y = 0; y < height; y++) {
+            image.setPixel(color, left + width - 1, top + y);
+        }
+
+        // Mark top
+        for (int x = 0; x < width; x++) {
+            image.setPixel(color, left + x, top);
+        }
+
+        // Mark bottom
+        for (int x = 0; x < width; x++) {
+            image.setPixel(color, left + x, top + height - 1);
+        }
     }
 }

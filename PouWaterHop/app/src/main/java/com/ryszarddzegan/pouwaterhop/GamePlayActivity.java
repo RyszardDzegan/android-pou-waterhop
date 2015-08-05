@@ -110,7 +110,7 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
 
     private void initializeMembers() {
         ApplicationFlow applicationFlow = new ApplicationFlow(this, this);
-        imageRecognizer = new ImageRecognizer(PixelHelperFactoryImp.getInstance());
+        imageRecognizer = new ImageRecognizer(PixelHelperImp.getInstance());
         pictureProvider = new PictureProvider(this, this);
         gameActionPerformedListener = applicationFlow;
         gameStateChangedListener = applicationFlow;
@@ -127,7 +127,7 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
     private void updateCurrentGameStateImage(Image image) throws IOException {
         /* Uncomment the code below to mock camera's result */
         AssetManager assetManager = getApplicationContext().getAssets();
-        InputStream inputStream = assetManager.open("waterhop1.jpg");
+        InputStream inputStream = assetManager.open("waterhop52.jpg");
         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
         image = new ImageImp(bitmap);
         /**/

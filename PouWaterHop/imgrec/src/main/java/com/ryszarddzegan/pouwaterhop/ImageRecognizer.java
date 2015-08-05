@@ -1,52 +1,60 @@
 package com.ryszarddzegan.pouwaterhop;
 
 public class ImageRecognizer {
-    private static final int MIN_WIDTH = 64;
-    private static final int MIN_HEIGHT = 48;
+    private static final int MIN_WIDTH = 128;
+    private static final int MIN_HEIGHT = 96;
 
-    private final PixelHelperFactory pixelHelperFactory;
+    private final PixelsSnapper pixelsSnapper;
+    private final ColorMapper colorMapper;
 
-    private final ImageArea itemImageArea;
-    private final ImageArea position1ImageArea;
-    private final ImageArea position2ImageArea;
+    private final ImageArea position1Hole;
+    private final ImageArea position1Item;
 
-    private final HoleRecognizer position1HoleRecognizer;
-    private final HoleRecognizer position2HoleRecognizer;
+    private final ImageArea position2Hole;
+    private final ImageArea position2Item;
 
-    public ImageRecognizer(PixelHelperFactory pixelHelperFactory){
-        this.pixelHelperFactory = pixelHelperFactory;
+    private final ImageAreaRecognizer position1;
+    private final ImageAreaRecognizer position2;
 
-        itemImageArea = new ImageArea(pixelHelperFactory, 0.34f, 0.3f, 0.1f, 0.3f, 1f, 0.25f, 0.25f);
-        position1ImageArea = new ImageArea(pixelHelperFactory, 0.31f, 0.6f, 0.15f, 0.2f, 0.25f, 1f, 0.25f);
-        position2ImageArea = new ImageArea(pixelHelperFactory, 0.5f, 0.6f, 0.15f, 0.2f, 0.25f, 0.25f, 1f);
+    public ImageRecognizer(PixelHelper pixelHelper){
+        this.pixelsSnapper = new PixelsSnapper(pixelHelper);
+        this.colorMapper = GlobalColorMapper.getInstance();
 
-        position1HoleRecognizer = new HoleRecognizer(pixelHelperFactory, position1ImageArea);
-        position2HoleRecognizer = new HoleRecognizer(pixelHelperFactory, position2ImageArea);
-    }
+        position1Hole = new ImageArea(0.30f, 0.60f, 0.20f, 0.20f);
+        position1Item = new ImageArea(0.35f, 0.30f, 0.10f, 0.30f);
 
-    public Image prepareImageForDisplay(Image image) {
-        return prepareImageForRecognition(image);
+        position2Hole = new ImageArea(0.55f, 0.60f, 0.20f, 0.20f);
+        position2Item = new ImageArea(0.60f, 0.30f, 0.10f, 0.30f);
+
+        position1 = new ImageAreaRecognizer(position1Hole, position1Item);
+        position2 = new ImageAreaRecognizer(position2Hole, position2Item);
     }
 
     public Image prepareImageForRecognitionPreview(Image image) {
-        if (ImageHelper.isPortrait(image))
-            image = image.rotate(90);
+        image = prepareImageForRecognition(image);
+        image = image.clone();
 
-        if (image.getWidth() < MIN_WIDTH)
-            throw new IllegalArgumentException(String.format("Width must be greater than or equal %s.", MIN_WIDTH));
+        ColorsHelper.mapColors(image, colorMapper);
 
-        if (image.getHeight() < MIN_HEIGHT)
-            throw new IllegalArgumentException(String.format("Height must be greater than or equal %s.", MIN_HEIGHT));
-
-        image = ImageHelper.getBottomHalf(image);
-        itemImageArea.markArea(image);
-        position1ImageArea.markArea(image);
-        position2ImageArea.markArea(image);
+        position1Hole.markArea(image, StandardColors.red);
+        position1Item.markArea(image, StandardColors.red);
+        position2Hole.markArea(image, StandardColors.red);
+        position2Item.markArea(image, StandardColors.red);
 
         return image;
     }
 
     public Image prepareImageForRecognition(Image image) {
+        image = prepareImageForDisplay(image);
+
+        image = image.scale(MIN_WIDTH, MIN_HEIGHT);
+        pixelsSnapper.snap(image);
+        NoiseRemover.removeNoise(image);
+
+        return image;
+    }
+
+    public Image prepareImageForDisplay(Image image) {
         if (ImageHelper.isPortrait(image))
             image = image.rotate(90);
 
@@ -60,10 +68,26 @@ public class ImageRecognizer {
     }
 
     public boolean isPosition1Hole(Image image) {
-        return position1HoleRecognizer.isHole(image);
+        return position1.isHole(image);
     }
 
     public boolean isPosition2Hole(Image image) {
-        return position2HoleRecognizer.isHole(image);
+        return position2.isHole(image);
+    }
+
+    public boolean isPosition1Coin(Image image) {
+        return position1.isCoin(image);
+    }
+
+    public boolean isPosition2Coin(Image image) {
+        return position2.isCoin(image);
+    }
+
+    public boolean isPosition1Watch(Image image) {
+        return position1.isWatch(image);
+    }
+
+    public boolean isPosition2Watch(Image image) {
+        return position2.isWatch(image);
     }
 }
