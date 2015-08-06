@@ -3,14 +3,19 @@ package com.ryszarddzegan.pouwaterhop;
 public class ApplicationFlow implements GameActionPerformedListener, GameStateRequiredListener, GameImageProvidedListener, GameStateChangedListener {
     private final GameActionRequiredListener gameActionRequiredListener;
     private final GameImageRequiredListener gameImageRequiredListener;
+    private final GameStateRecognizer gameStateRecognizer;
 
-    public ApplicationFlow(GameActionRequiredListener gameActionRequiredListener, GameImageRequiredListener gameImageRequiredListener) throws IllegalArgumentException {
+    public ApplicationFlow(GameActionRequiredListener gameActionRequiredListener, GameImageRequiredListener gameImageRequiredListener, ImageRecognizer imageRecognizer) throws IllegalArgumentException {
+        if (imageRecognizer == null)
+            throw new IllegalArgumentException("imageRecognizer cannot be null");
+
         if (gameActionRequiredListener == null)
             throw new IllegalArgumentException("gameActionRequiredListener cannot be null");
 
         if (gameImageRequiredListener == null)
             throw new IllegalArgumentException("gameImageRequiredListener cannot be null");
 
+        this.gameStateRecognizer = new GameStateRecognizer(imageRecognizer);
         this.gameActionRequiredListener = gameActionRequiredListener;
         this.gameImageRequiredListener = gameImageRequiredListener;
     }
@@ -27,8 +32,7 @@ public class ApplicationFlow implements GameActionPerformedListener, GameStateRe
 
     @Override
     public void onGameImageProvided(Image image) {
-        // TODO: Recognize image
-        GameState gameState = GameState.CLOCK_EMPTY;
+        GameState gameState = gameStateRecognizer.recognizeState(image);
         onGameStateChanged(gameState);
     }
 

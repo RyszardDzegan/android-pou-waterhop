@@ -1,1 +1,1 @@
-include ':app', ':logic', ':imgrec'
+include ':app', ':logic', ':imgrec', ':imgrec.common'

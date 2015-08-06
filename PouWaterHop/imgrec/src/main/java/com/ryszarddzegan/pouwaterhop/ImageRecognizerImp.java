@@ -1,6 +1,6 @@
 package com.ryszarddzegan.pouwaterhop;
 
-public class ImageRecognizer {
+public class ImageRecognizerImp implements ImageRecognizer {
     private static final int MIN_WIDTH = 128;
     private static final int MIN_HEIGHT = 96;
 
@@ -20,11 +20,11 @@ public class ImageRecognizer {
     private final ImageAreaRecognizer position1;
     private final ImageAreaRecognizer position2;
 
-    public ImageRecognizer(PixelHelper pixelHelper) {
+    public ImageRecognizerImp(PixelHelper pixelHelper) {
         this(pixelHelper, LoggerNullObject.getInstance());
     }
 
-    public ImageRecognizer(PixelHelper pixelHelper, Logger logger){
+    public ImageRecognizerImp(PixelHelper pixelHelper, Logger logger){
         this.pixelHelper = pixelHelper;
         this.logger = logger;
         this.pixelsSnapper = new PixelsSnapper(pixelHelper);

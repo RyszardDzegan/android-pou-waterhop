@@ -1,9 +1,7 @@
 package com.ryszarddzegan.pouwaterhop;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -14,11 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class GamePlayActivity extends AppCompatActivity implements GameActionPerformedListener, GameActionRequiredListener, GameStateChangedListener, GameStateRequiredListener, PictureProvidedListener, GameImageRequiredListener {
 
-    private ImageRecognizer imageRecognizer;
+    private ImageRecognizerImp imageRecognizer;
     private PictureProvider pictureProvider;
     private GameActionPerformedListener gameActionPerformedListener;
     private GameStateChangedListener gameStateChangedListener;
@@ -109,8 +106,8 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
     }
 
     private void initializeMembers() {
-        ApplicationFlow applicationFlow = new ApplicationFlow(this, this);
-        imageRecognizer = new ImageRecognizer(PixelHelperImp.getInstance(), LoggerImp.getInstance());
+        imageRecognizer = new ImageRecognizerImp(PixelHelperImp.getInstance(), LoggerImp.getInstance());
+        ApplicationFlow applicationFlow = new ApplicationFlow(this, this, imageRecognizer);
         pictureProvider = new PictureProvider(this, this);
         gameActionPerformedListener = applicationFlow;
         gameStateChangedListener = applicationFlow;

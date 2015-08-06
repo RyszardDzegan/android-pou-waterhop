@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/PouWaterHop.iml" filepath="$PROJECT_DIR$/PouWaterHop.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/imgrec/imgrec.iml" filepath="$PROJECT_DIR$/imgrec/imgrec.iml" />
+      <module fileurl="file://$PROJECT_DIR$/imgrec.common/imgrec.common.iml" filepath="$PROJECT_DIR$/imgrec.common/imgrec.common.iml" />
       <module fileurl="file://$PROJECT_DIR$/logic/logic.iml" filepath="$PROJECT_DIR$/logic/logic.iml" />
     </modules>
   </component>
