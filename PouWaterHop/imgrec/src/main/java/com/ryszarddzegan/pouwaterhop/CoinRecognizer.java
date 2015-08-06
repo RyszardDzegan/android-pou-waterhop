@@ -19,10 +19,12 @@ public class CoinRecognizer {
 
         Integer coins = colorsCount.get(StandardColors.red);
         Integer sky = colorsCount.get(StandardColors.blue);
+        Integer unknown = colorsCount.get(StandardColors.unknown);
 
         coins = (coins == null ? 0 : coins);
         sky = (sky == null ? 0 : sky);
+        unknown = (unknown == null ? 0 : unknown);
 
-        return coins > 15 && sky > coins;
+        return coins > 15 && sky + unknown > coins;
     }
 }

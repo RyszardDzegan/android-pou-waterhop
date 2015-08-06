@@ -19,10 +19,12 @@ public class WatchRecognizer {
 
         Integer watches = colorsCount.get(StandardColors.red);
         Integer sky = colorsCount.get(StandardColors.blue);
+        Integer unknown = colorsCount.get(StandardColors.unknown);
 
         watches = (watches == null ? 0 : watches);
         sky = (sky == null ? 0 : sky);
+        unknown = (unknown == null ? 0 : unknown);
 
-        return watches > 15 && sky > watches;
+        return watches > 15 && sky + unknown > watches;
     }
 }

@@ -50,4 +50,22 @@ public class ColorsHelper {
             }
         }
     }
+
+    public static String getPixelsInfo(Image image, PixelHelper pixelHelper) {
+        StringBuilder infoBuilder = new StringBuilder();
+        HashMap<Integer, Integer> colorCountsHashMap = ColorsHelper.getColorCounts(image);
+        for (Integer key : colorCountsHashMap.keySet()) {
+            String pixelDescription = getPixelInfo(key, pixelHelper);
+            String info = String.format("%s : %d\n", pixelDescription, colorCountsHashMap.get(key));
+            infoBuilder.append(info);
+        }
+        return infoBuilder.toString();
+    }
+
+    public static String getPixelInfo(int pixel, PixelHelper pixelHelper) {
+        final int r = pixelHelper.red(pixel);
+        final int g = pixelHelper.green(pixel);
+        final int b = pixelHelper.blue(pixel);
+        return String.format("%d = {%d, %d, %d}", pixel, r, g, b);
+    }
 }

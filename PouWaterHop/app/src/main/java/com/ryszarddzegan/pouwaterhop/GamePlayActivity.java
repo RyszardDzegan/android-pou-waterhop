@@ -110,7 +110,7 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
 
     private void initializeMembers() {
         ApplicationFlow applicationFlow = new ApplicationFlow(this, this);
-        imageRecognizer = new ImageRecognizer(PixelHelperImp.getInstance());
+        imageRecognizer = new ImageRecognizer(PixelHelperImp.getInstance(), LoggerImp.getInstance());
         pictureProvider = new PictureProvider(this, this);
         gameActionPerformedListener = applicationFlow;
         gameStateChangedListener = applicationFlow;
@@ -126,18 +126,23 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
 
     private void updateCurrentGameStateImage(Image image) throws IOException {
         /* Uncomment the code below to mock camera's result */
-        AssetManager assetManager = getApplicationContext().getAssets();
-        InputStream inputStream = assetManager.open("waterhop52.jpg");
-        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-        image = new ImageImp(bitmap);
+//        AssetManager assetManager = getApplicationContext().getAssets();
+//        InputStream inputStream = assetManager.open("waterhop1.jpg");
+//        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+//        image = new ImageImp(bitmap);
         /**/
 
         ImageImp imageForDisplay = (ImageImp) imageRecognizer.prepareImageForDisplay(image);
-        ImageImp imageForRecognition = (ImageImp) imageRecognizer.prepareImageForRecognitionPreview(image);
         ImageView currentGameStateImage = (ImageView)findViewById(R.id.current_game_state_image);
-        ImageView currentGameStateImageRecognition = (ImageView)findViewById(R.id.current_game_state_image_recognition);
         currentGameStateImage.setImageBitmap(imageForDisplay.getBitmap());
-        currentGameStateImageRecognition.setImageBitmap(imageForRecognition.getBitmap());
+
+        ImageImp imageForRecognition1 = (ImageImp) imageRecognizer.prepareImageForRecognitionPreview1(image);
+        ImageView currentGameStateImageRecognition1 = (ImageView)findViewById(R.id.current_game_state_image_recognition_prior_to_color_reduction);
+        currentGameStateImageRecognition1.setImageBitmap(imageForRecognition1.getBitmap());
+
+        ImageImp imageForRecognition2 = (ImageImp) imageRecognizer.prepareImageForRecognitionPreview2(image);
+        ImageView currentGameStateImageRecognition2 = (ImageView)findViewById(R.id.current_game_state_image_recognition);
+        currentGameStateImageRecognition2.setImageBitmap(imageForRecognition2.getBitmap());
     }
 
     private void updateRequiredGameAction(GameAction gameAction) {

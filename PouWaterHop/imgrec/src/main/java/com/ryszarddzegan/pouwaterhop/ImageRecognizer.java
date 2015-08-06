@@ -4,6 +4,10 @@ public class ImageRecognizer {
     private static final int MIN_WIDTH = 128;
     private static final int MIN_HEIGHT = 96;
 
+    private static final String LOGGER_TAG = "ImgRec";
+
+    private final PixelHelper pixelHelper;
+    private final Logger logger;
     private final PixelsSnapper pixelsSnapper;
     private final ColorMapper colorMapper;
 
@@ -16,7 +20,13 @@ public class ImageRecognizer {
     private final ImageAreaRecognizer position1;
     private final ImageAreaRecognizer position2;
 
-    public ImageRecognizer(PixelHelper pixelHelper){
+    public ImageRecognizer(PixelHelper pixelHelper) {
+        this(pixelHelper, LoggerNullObject.getInstance());
+    }
+
+    public ImageRecognizer(PixelHelper pixelHelper, Logger logger){
+        this.pixelHelper = pixelHelper;
+        this.logger = logger;
         this.pixelsSnapper = new PixelsSnapper(pixelHelper);
         this.colorMapper = GlobalColorMapper.getInstance();
 
@@ -30,8 +40,18 @@ public class ImageRecognizer {
         position2 = new ImageAreaRecognizer(position2Hole, position2Item);
     }
 
-    public Image prepareImageForRecognitionPreview(Image image) {
-        image = prepareImageForRecognition(image);
+    public Image prepareImageForRecognitionPreview1(Image image) {
+        image = prepareImageForDisplay(image);
+
+        image = image.scale(MIN_WIDTH, MIN_HEIGHT);
+        pixelsSnapper.snap(image);
+        NoiseRemover.removeNoise(image);
+
+        return image;
+    }
+
+    public Image prepareImageForRecognitionPreview2(Image image) {
+        image = prepareImageForRecognitionPreview1(image);
         image = image.clone();
 
         ColorsHelper.mapColors(image, colorMapper);
@@ -45,11 +65,11 @@ public class ImageRecognizer {
     }
 
     public Image prepareImageForRecognition(Image image) {
-        image = prepareImageForDisplay(image);
+        image = prepareImageForRecognitionPreview1(image);
+        image = image.clone();
 
-        image = image.scale(MIN_WIDTH, MIN_HEIGHT);
-        pixelsSnapper.snap(image);
-        NoiseRemover.removeNoise(image);
+        logger.info(LOGGER_TAG, String.format("Prepared image: %dx%d", image.getWidth(), image.getHeight()));
+        logger.info(LOGGER_TAG, String.format("Prepared image colors: %s", ColorsHelper.getPixelsInfo(image, pixelHelper)));
 
         return image;
     }
