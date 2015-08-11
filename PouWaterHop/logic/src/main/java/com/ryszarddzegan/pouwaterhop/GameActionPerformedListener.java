@@ -2,9 +2,8 @@ package com.ryszarddzegan.pouwaterhop;
 
 public interface GameActionPerformedListener {
     /**
-     * UI confirms that the requested action has been performed
-     * which means that game transits itself to a new state.
-     * Control is being returned to the application flow controller.
+     * Passes control to business logic.
+     * Business logic starts over the flow asking for an image to recognize with GameImageRequiredListener.onGameImageRequired event.
      */
     void onGameActionPerformed();
 }

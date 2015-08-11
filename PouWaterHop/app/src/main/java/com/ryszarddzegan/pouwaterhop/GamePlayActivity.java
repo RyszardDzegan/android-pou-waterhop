@@ -13,20 +13,18 @@ import android.widget.TextView;
 
 import java.io.IOException;
 
-public class GamePlayActivity extends AppCompatActivity implements GameActionPerformedListener, GameActionRequiredListener, GameStateChangedListener, GameStateRequiredListener, PictureProvidedListener, GameImageRequiredListener {
+public class GamePlayActivity extends AppCompatActivity implements GameActionChangedListener, GameImageRequiredListener, GameStateChangedListener, PictureProvidedListener {
 
     private ImageRecognizerImp imageRecognizer;
     private PictureProvider pictureProvider;
+    private GameActionRequiredListener gameActionRequiredListener;
     private GameActionPerformedListener gameActionPerformedListener;
-    private GameStateChangedListener gameStateChangedListener;
-    private GameStateRequiredListener gameStateRequiredListener;
     private GameImageProvidedListener gameImageProvidedListener;
-    private GameImageRequiredListener gameImageRequiredListener;
 
     private View.OnClickListener onReadyButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            pictureProvider.onGameImageRequired();
+            gameActionPerformedListener.onGameActionPerformed();
         }
     };
 
@@ -36,7 +34,7 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
         setContentView(R.layout.activity_game_play);
         initializeMembers();
         registerEventHandlers();
-        pictureProvider.onGameImageRequired();
+        gameActionPerformedListener.onGameActionPerformed();
     }
 
     @Override
@@ -67,16 +65,6 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
     }
 
     @Override
-    public void onGameActionPerformed() {
-        gameActionPerformedListener.onGameActionPerformed();
-    }
-
-    @Override
-    public void onGameActionRequired(GameAction gameAction) {
-        updateRequiredGameAction(gameAction);
-    }
-
-    @Override
     public void onPictureProvided(Bitmap bitmap) {
         Image image = new ImageImp(bitmap);
 
@@ -86,34 +74,32 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
             e.printStackTrace();
         }
 
-        image = imageRecognizer.prepareImageForRecognition(image);
         gameImageProvidedListener.onGameImageProvided(image);
     }
 
     @Override
     public void onGameImageRequired() {
-        gameImageRequiredListener.onGameImageRequired();
+        pictureProvider.onGameImageRequired();
     }
 
     @Override
     public void onGameStateChanged(GameState gameState) {
-        gameStateChangedListener.onGameStateChanged(gameState);
+        updateRecognizedGameState(gameState);
+        gameActionRequiredListener.onGameActionRequired(gameState);
     }
 
     @Override
-    public void onGameStateRequired() {
-        gameStateRequiredListener.onGameStateRequired();
+    public void onGameActionChanged(GameAction gameAction) {
+        updateRequiredGameAction(gameAction);
     }
 
     private void initializeMembers() {
         imageRecognizer = new ImageRecognizerImp(PixelHelperImp.getInstance(), LoggerImp.getInstance());
-        ApplicationFlow applicationFlow = new ApplicationFlow(this, this, imageRecognizer);
-        pictureProvider = new PictureProvider(this, this);
+        ApplicationFlow applicationFlow = new ApplicationFlow(imageRecognizer, this, this, this);
+        pictureProvider = new PictureFromAssetsProvider(this, this); //TODO: Replace PictureFromAssetsProvider with PictureFromCameraProvider for production
+        gameActionRequiredListener = applicationFlow;
         gameActionPerformedListener = applicationFlow;
-        gameStateChangedListener = applicationFlow;
-        gameStateRequiredListener = applicationFlow;
         gameImageProvidedListener = applicationFlow;
-        gameImageRequiredListener = pictureProvider;
     }
 
     private void registerEventHandlers() {
@@ -122,13 +108,6 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
     }
 
     private void updateCurrentGameStateImage(Image image) throws IOException {
-        /* Uncomment the code below to mock camera's result */
-//        AssetManager assetManager = getApplicationContext().getAssets();
-//        InputStream inputStream = assetManager.open("waterhop1.jpg");
-//        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-//        image = new ImageImp(bitmap);
-        /**/
-
         ImageImp imageForDisplay = (ImageImp) imageRecognizer.prepareImageForDisplay(image);
         ImageView currentGameStateImage = (ImageView)findViewById(R.id.current_game_state_image);
         currentGameStateImage.setImageBitmap(imageForDisplay.getBitmap());
@@ -140,6 +119,12 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionPer
         ImageImp imageForRecognition2 = (ImageImp) imageRecognizer.prepareImageForRecognitionPreview2(image);
         ImageView currentGameStateImageRecognition2 = (ImageView)findViewById(R.id.current_game_state_image_recognition);
         currentGameStateImageRecognition2.setImageBitmap(imageForRecognition2.getBitmap());
+    }
+
+    private void updateRecognizedGameState(GameState gameState) {
+        String gameStateText = gameState.toString();
+        TextView recognizedGameStateText = (TextView)findViewById(R.id.recognized_game_state_text);
+        recognizedGameStateText.setText(gameStateText);
     }
 
     private void updateRequiredGameAction(GameAction gameAction) {

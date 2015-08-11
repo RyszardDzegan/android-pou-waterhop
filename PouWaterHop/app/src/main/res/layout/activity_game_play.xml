@@ -45,7 +45,16 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/required_game_action_text"
-            android:layout_below="@+id/current_game_state_image_recognition" />
+            android:layout_below="@+id/current_game_state_image_recognition"
+            android:text="@string/action_text_sample" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/recognized_game_state_text"
+            android:layout_below="@+id/required_game_action_text"
+            android:text="@string/game_state_sample" />
 
         <Button
             android:layout_width="wrap_content"

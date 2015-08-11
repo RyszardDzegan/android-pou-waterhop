@@ -2,8 +2,9 @@ package com.ryszarddzegan.pouwaterhop;
 
 public interface GameImageRequiredListener {
     /**
-     * That method should call device's camera
-     * in order to get the actual picture of game state.
+     * Passes control to UI.
+     * UI invokes camera object to get an image.
+     * Then it invokes GameImageProvidedListener.onGameImageProvided event
      */
     void onGameImageRequired();
 }

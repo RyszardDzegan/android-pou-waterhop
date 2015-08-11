@@ -2,9 +2,9 @@ package com.ryszarddzegan.pouwaterhop;
 
 public interface GameStateChangedListener {
     /**
-     * Image recognition module invokes this method
-     * after parsing the image representing the current game state.
-     * Control is being returned to the application flow controller.
+     * Passes control to UI.
+     * Allows to update UI view and show recognized game state.
+     * Then UI asks for game action by raising GameActionRequiredListener.onGameActionRequired event.
      */
     void onGameStateChanged(GameState gameState);
 }
