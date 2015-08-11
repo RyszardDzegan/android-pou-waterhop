@@ -26,7 +26,7 @@ public class PictureFromAssetsProvider implements PictureProvider {
     @Override
     public void onGameImageRequired() {
         final AssetManager assetManager = activity.getApplicationContext().getAssets();
-        final String assetName = String.format("waterhop%d.jpg", assetIndex++);
+        @SuppressWarnings("SpellCheckingInspection") final String assetName = String.format("waterhop%d.jpg", assetIndex++);
 
         if (assetIndex > ASSETS_COUNT) {
             assetIndex = 1;

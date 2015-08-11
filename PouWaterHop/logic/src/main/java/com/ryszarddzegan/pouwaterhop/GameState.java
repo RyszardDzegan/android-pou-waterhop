@@ -77,10 +77,6 @@ public enum GameState {
         }
     }
 
-    public static GameState fromPositionStates(PositionState position1, PositionState position2) {
-        return fromValue((position1.getValue()<<2)|(position2.getValue()<<0));
-    }
-
     private static PositionState getPositionState(int value) throws IndexOutOfBoundsException {
         switch (value) {
             case 0x0:

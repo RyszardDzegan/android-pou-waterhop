@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
+@SuppressWarnings("unused")
 public class PictureFromCameraProvider implements PictureProvider {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private final Activity activity;

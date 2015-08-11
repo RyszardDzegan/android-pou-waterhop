@@ -76,6 +76,7 @@ public class ImageImp implements Image {
         return new ImageImp(rotatedBitmap);
     }
 
+    @SuppressWarnings("CloneDoesntCallSuperClone")
     @Override
     public Image clone() {
         Bitmap clonedBitmap = Bitmap.createBitmap(bitmap, 0, 0, getWidth(), getHeight());

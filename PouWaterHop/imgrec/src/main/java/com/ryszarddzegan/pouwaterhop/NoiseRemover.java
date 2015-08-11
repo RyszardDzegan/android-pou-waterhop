@@ -47,7 +47,6 @@ public class NoiseRemover {
             top = y - RADIUS;
         }
 
-        int[] pixels = image.getPixels(left, top, SIZE, SIZE);
-        return pixels;
+        return image.getPixels(left, top, SIZE, SIZE);
     }
 }

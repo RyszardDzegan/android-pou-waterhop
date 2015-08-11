@@ -31,8 +31,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_above="@+id/start_button"
-        android:elegantTextHeight="false" />
+        android:layout_above="@+id/start_button" />
 
     <Button
         android:layout_width="0dp"

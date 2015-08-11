@@ -1,10 +1,6 @@
 package com.ryszarddzegan.pouwaterhop;
 
 public class ServiceProvider {
-    private static Logger logger;
-    private static PixelHelper pixelHelper;
-    private static ImageRecognizer imageRecognizer;
-    private static ApplicationFlow applicationFlow;
     private static PictureProvider pictureProvider;
     private static GameActionRequiredListener gameActionRequiredListener;
     private static GameActionPerformedListener gameActionPerformedListener;
@@ -12,10 +8,10 @@ public class ServiceProvider {
     private static GameStateImageUpdater gameStateImageUpdater;
 
     public static void setGamePlayActivity(GamePlayActivity gamePlayActivity) {
-        logger = LoggerImp.getInstance();
-        pixelHelper = PixelHelperImp.getInstance();
-        imageRecognizer = new ImageRecognizerImp(pixelHelper, logger);
-        applicationFlow = new ApplicationFlow(imageRecognizer, gamePlayActivity, gamePlayActivity, gamePlayActivity);
+        Logger logger = LoggerImp.getInstance();
+        PixelHelper pixelHelper = PixelHelperImp.getInstance();
+        ImageRecognizer imageRecognizer = new ImageRecognizerImp(pixelHelper, logger);
+        ApplicationFlow applicationFlow = new ApplicationFlow(imageRecognizer, gamePlayActivity, gamePlayActivity, gamePlayActivity);
         pictureProvider = new PictureFromAssetsProvider(gamePlayActivity, gamePlayActivity); //TODO: Replace PictureFromAssetsProvider with PictureFromCameraProvider in production
         gameActionRequiredListener = applicationFlow;
         gameActionPerformedListener = applicationFlow;
