@@ -95,4 +95,44 @@ public enum GameState {
                 throw new IndexOutOfBoundsException("Unknown position state.");
         }
     }
+
+    @Override
+    public String toString() {
+        switch (value){
+            case 0b0000:
+                return "empty empty";
+            case 0b0001:
+                return "empty hole";
+            case 0b0010:
+                return "empty coin";
+            case 0b0011:
+                return "empty clock";
+            case 0b0100:
+                return "hole empty";
+            case 0b0101:
+                throw new IllegalArgumentException("Value cannot represent two holes.");
+            case 0b0110:
+                return "hole coin";
+            case 0b0111:
+                return "hole clock";
+            case 0b1000:
+                return "coin empty";
+            case 0b1001:
+                return "coin hole";
+            case 0b1010:
+                return "coin coin";
+            case 0b1011:
+                return "coin clock";
+            case 0b1100:
+                return "clock empty";
+            case 0b1101:
+                return "clock hole";
+            case 0b1110:
+                return "clock coin";
+            case 0b1111:
+                return "clock clock";
+            default:
+                throw new IndexOutOfBoundsException("Unknown game state.");
+        }
+    }
 }
