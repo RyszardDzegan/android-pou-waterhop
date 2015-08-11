@@ -9,32 +9,18 @@ public class ServiceProvider {
     private static GameActionRequiredListener gameActionRequiredListener;
     private static GameActionPerformedListener gameActionPerformedListener;
     private static GameImageProvidedListener gameImageProvidedListener;
+    private static GameStateImageUpdater gameStateImageUpdater;
 
     public static void setGamePlayActivity(GamePlayActivity gamePlayActivity) {
         logger = LoggerImp.getInstance();
         pixelHelper = PixelHelperImp.getInstance();
         imageRecognizer = new ImageRecognizerImp(pixelHelper, logger);
         applicationFlow = new ApplicationFlow(imageRecognizer, gamePlayActivity, gamePlayActivity, gamePlayActivity);
-        pictureProvider = new PictureFromAssetsProvider(gamePlayActivity, gamePlayActivity); //TODO: Replace PictureFromAssetsProvider with PictureFromCameraProvider for production
+        pictureProvider = new PictureFromAssetsProvider(gamePlayActivity, gamePlayActivity); //TODO: Replace PictureFromAssetsProvider with PictureFromCameraProvider in production
         gameActionRequiredListener = applicationFlow;
         gameActionPerformedListener = applicationFlow;
         gameImageProvidedListener = applicationFlow;
-    }
-
-    public static Logger getLogger() {
-        return logger;
-    }
-
-    public static PixelHelper getPixelHelper() {
-        return pixelHelper;
-    }
-
-    public static ImageRecognizer getImageRecognizer() {
-        return imageRecognizer;
-    }
-
-    public static ApplicationFlow getApplicationFlow() {
-        return applicationFlow;
+        gameStateImageUpdater = new GameStateImageWithoutPreviewUpdater(gamePlayActivity, imageRecognizer); //TODO: Replace GameStateImageWithPreviewUpdater with GameStateImageWithoutPreviewUpdater in production
     }
 
     public static PictureProvider getPictureProvider() {
@@ -51,5 +37,9 @@ public class ServiceProvider {
 
     public static GameImageProvidedListener getGameImageProvidedListener() {
         return gameImageProvidedListener;
+    }
+
+    public static GameStateImageUpdater getGameStateImageUpdater() {
+        return gameStateImageUpdater;
     }
 }

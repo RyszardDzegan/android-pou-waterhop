@@ -8,18 +8,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.io.IOException;
 
 public class GamePlayActivity extends AppCompatActivity implements GameActionChangedListener, GameImageRequiredListener, GameStateChangedListener, PictureProvidedListener {
 
-    private ImageRecognizer imageRecognizer;
     private PictureProvider pictureProvider;
     private GameActionRequiredListener gameActionRequiredListener;
     private GameActionPerformedListener gameActionPerformedListener;
     private GameImageProvidedListener gameImageProvidedListener;
+    private GameStateImageUpdater gameStateImageUpdater;
 
     private View.OnClickListener onReadyButtonClickListener = new View.OnClickListener() {
         @Override
@@ -31,9 +28,9 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionCha
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_play);
         ServiceProvider.setGamePlayActivity(this);
         initializeMembers();
+        setContentView(gameStateImageUpdater.getLayout());
         registerEventHandlers();
         gameActionPerformedListener.onGameActionPerformed();
     }
@@ -68,13 +65,7 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionCha
     @Override
     public void onPictureProvided(Bitmap bitmap) {
         Image image = new ImageImp(bitmap);
-
-        try {
-            updateCurrentGameStateImage(image);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        gameStateImageUpdater.displayGameStateImages(image);
         gameImageProvidedListener.onGameImageProvided(image);
     }
 
@@ -95,30 +86,16 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionCha
     }
 
     private void initializeMembers() {
-        imageRecognizer = ServiceProvider.getImageRecognizer();
         pictureProvider = ServiceProvider.getPictureProvider();
         gameActionRequiredListener = ServiceProvider.getGameActionRequiredListener();
         gameActionPerformedListener = ServiceProvider.getGameActionPerformedListener();
         gameImageProvidedListener = ServiceProvider.getGameImageProvidedListener();
+        gameStateImageUpdater = ServiceProvider.getGameStateImageUpdater();
     }
 
     private void registerEventHandlers() {
         Button readyButton = (Button)findViewById(R.id.ready_button);
         readyButton.setOnClickListener(onReadyButtonClickListener);
-    }
-
-    private void updateCurrentGameStateImage(Image image) throws IOException {
-        ImageImp imageForDisplay = (ImageImp) imageRecognizer.prepareImageForDisplay(image);
-        ImageView currentGameStateImage = (ImageView)findViewById(R.id.current_game_state_image);
-        currentGameStateImage.setImageBitmap(imageForDisplay.getBitmap());
-
-        ImageImp imageForRecognition1 = (ImageImp) imageRecognizer.prepareImageForRecognitionPreview1(image);
-        ImageView currentGameStateImageRecognition1 = (ImageView)findViewById(R.id.current_game_state_image_recognition_prior_to_color_reduction);
-        currentGameStateImageRecognition1.setImageBitmap(imageForRecognition1.getBitmap());
-
-        ImageImp imageForRecognition2 = (ImageImp) imageRecognizer.prepareImageForRecognitionPreview2(image);
-        ImageView currentGameStateImageRecognition2 = (ImageView)findViewById(R.id.current_game_state_image_recognition);
-        currentGameStateImageRecognition2.setImageBitmap(imageForRecognition2.getBitmap());
     }
 
     private void updateRecognizedGameState(GameState gameState) {
