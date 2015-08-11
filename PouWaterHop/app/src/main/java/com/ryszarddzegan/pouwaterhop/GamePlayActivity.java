@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class GamePlayActivity extends AppCompatActivity implements GameActionChangedListener, GameImageRequiredListener, GameStateChangedListener, PictureProvidedListener {
 
-    private ImageRecognizerImp imageRecognizer;
+    private ImageRecognizer imageRecognizer;
     private PictureProvider pictureProvider;
     private GameActionRequiredListener gameActionRequiredListener;
     private GameActionPerformedListener gameActionPerformedListener;
@@ -32,6 +32,7 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionCha
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_play);
+        ServiceProvider.setGamePlayActivity(this);
         initializeMembers();
         registerEventHandlers();
         gameActionPerformedListener.onGameActionPerformed();
@@ -94,12 +95,11 @@ public class GamePlayActivity extends AppCompatActivity implements GameActionCha
     }
 
     private void initializeMembers() {
-        imageRecognizer = new ImageRecognizerImp(PixelHelperImp.getInstance(), LoggerImp.getInstance());
-        ApplicationFlow applicationFlow = new ApplicationFlow(imageRecognizer, this, this, this);
-        pictureProvider = new PictureFromAssetsProvider(this, this); //TODO: Replace PictureFromAssetsProvider with PictureFromCameraProvider for production
-        gameActionRequiredListener = applicationFlow;
-        gameActionPerformedListener = applicationFlow;
-        gameImageProvidedListener = applicationFlow;
+        imageRecognizer = ServiceProvider.getImageRecognizer();
+        pictureProvider = ServiceProvider.getPictureProvider();
+        gameActionRequiredListener = ServiceProvider.getGameActionRequiredListener();
+        gameActionPerformedListener = ServiceProvider.getGameActionPerformedListener();
+        gameImageProvidedListener = ServiceProvider.getGameImageProvidedListener();
     }
 
     private void registerEventHandlers() {
